@@ -8,7 +8,7 @@ df = pd.read_csv('DegreeClassificationData.csv',index_col=0)
 chart = ['A','B','C','D','E','F']
 
 # size outer window
-plt.figure(figsize = (11,8))
+fig = plt.figure(figsize = (11,8))
 # title doesn't work
 # plt.title('Which degree program has the largest cohourt of students obtaining a single degree classification?')
 
@@ -23,4 +23,8 @@ for i in range (1, len(df.columns.values) + 1):
     plt.bar(df.index, df[degreeProgram])
 
 # show overall plot
-plt.show()
+plt.draw()
+plt.pause(1)
+ans = input("Answer: ")
+plt.close(fig)
+print("Your answer was: " + ans)

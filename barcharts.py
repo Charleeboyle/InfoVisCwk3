@@ -12,3 +12,8 @@ plt.ylabel('Usage')
 plt.title('Programming language usage')
 
 plt.show()
+
+if input():
+    ans = input()
+    plt.close()
+    print(ans)
