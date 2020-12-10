@@ -2,7 +2,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-def add_new_plot(plot, inputs, position, title):
+fig = plt.figure(figsize = (13,13))
+fig.suptitle('Which degree program has the largest cohourt of students obtaining a single degree classification?')
+
+def add_new_plot(plot, inputs, position, title):    
     plot.subplot(2,3,position)
     plot.pie(inputs, labels=label, startangle=90, autopct='%1.1f%%')
     plot.title(title)
