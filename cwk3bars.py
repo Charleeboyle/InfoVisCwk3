@@ -4,7 +4,7 @@ import matplotlib as mlp
 import matplotlib.pyplot as plt
 import csv
 from numpy import random
-def createSubPlots(df, plt, chartLabels):
+def createSubPlots(df, plt):
     # size outer window
     fig = plt.figure(figsize = (11,8))
     # add title
@@ -15,7 +15,7 @@ def createSubPlots(df, plt, chartLabels):
         degreeProgram = df.columns.values[i-1]
         # create subplot
         plt.subplot(2, 3, i)
-        plt.title('Chart: ' + chartLabels[i-1] + '  Degree Program: ' + degreeProgram)
+        plt.title('Chart ' + str(i) + '  Degree Program: ' + degreeProgram)
         plt.ylim(ymax=99)
         plt.ylabel("Percentage of students (%)")
         # grab data for degreeProgram & plot
@@ -41,6 +41,12 @@ def generateRandomData():
         random.shuffle(entry)
         data.append(entry)
 
+    # get max value out of all stats
+    maxValue = np.amax(data)
+    # find the chart in which the max value is contained == correct answer to question
+    # + 1 as charts are labelled from 1, not 0
+    correctChart = np.where(data == maxValue)[0][0] + 1
+    
     # organise data to be in correct format for csv
     organisedData = []
     for i in range(numRanges):
@@ -48,39 +54,49 @@ def generateRandomData():
         for j in range(numDegreePrograms):
             temp.append(data[j][i])
         organisedData.append(temp)
+    
+    return numRanges, organisedData, correctChart
 
+def createCsv(numRanges, organisedData):
     # Generate CSV file with random data
     with open('RandomData.csv', 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Range", "Maths", "English", "Biology", "Economics", "Law", "CS"])
+        
+        # insert ranges at start of data for index column
         organisedData[0].insert(0, "<40")
         organisedData[1].insert(0, "40-49")
         organisedData[2].insert(0, "50-50")
         organisedData[3].insert(0, "60-69")
         organisedData[4].insert(0, ">70")
+        
+        # construct csv file
         for i in range(numRanges):
             writer.writerow(organisedData[i])
 
     return pd.read_csv("RandomData.csv", index_col=0)
 
-chartLabels = ['A','B','C','D','E','F']
-
 # run trial n times
-n = 2
-ans = []
+n = 3
+user_answers = []
+correct_answers = []
 for i in range(n):
-    df = generateRandomData()
-    # draw trial
-    fig = createSubPlots(df, plt, chartLabels)
+    # generate random data for trial
+    numRanges, organisedData, correctChart = generateRandomData()
+    # construct csv to be used as data
+    df = createCsv(numRanges, organisedData)
+    # collect correct answer for trial
+    correct_answers.append(correctChart)
+    # construct subplots for each degree program
+    fig = createSubPlots(df, plt)
+    # draw graph
     plt.draw()
     plt.pause(1)
-
-    # store user answer
-    ans.append(input("Answer: "))
-    
-    # close trial
+    # collect user answer
+    user_answers.append(int(input("Answer: ")))
     plt.close(fig)
 
-print("Your answers were: " + str(ans))
+print("Your answers were: " + str(user_answers))
+print("The correct answers were: " + str(correct_answers))
 
 
