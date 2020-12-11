@@ -4,7 +4,7 @@ import matplotlib as mlp
 import matplotlib.pyplot as plt
 import csv
 from numpy import random
-
+import time
 def createSubPlots(df, trialNum):
     '''
     Create plot with n subplots, n being the number of columns in 
@@ -115,7 +115,7 @@ def createCsv(numRanges, organisedData):
         # construct csv file
         for i in range(numRanges):
             writer.writerow(organisedData[i])
-    
+
     return pd.read_csv("TrialData.csv", index_col=0)
 
 # run trial n times
@@ -132,9 +132,12 @@ def runBarChartTrials(numTrials):
     Returns:
         user_answers (list) -- list of user answers (int) for each trial
         correct_answers (list) -- list of correct answers (int) for each trial
+        response_times (list) -- list of Milliseconds that it took for the user
+                                 to answer each trial question
     '''
     user_answers = []
     correct_answers = []
+    response_times = []
     for i in range(numTrials):
         # generate random data for trial
         numRanges, organisedData, correctChart = generateTrialData()
@@ -146,13 +149,18 @@ def runBarChartTrials(numTrials):
         fig = createSubPlots(df, i)
         # draw graph
         plt.draw()
+        # record start time from when the user see's the graph
+        start_time = time.time()
         plt.pause(1)
         # collect user answer
         user_answers.append(int(input("Answer: ")))
+        # calculate response time of user for current trial
+        response_times.append(time.time() - start_time)
         plt.close(fig)
-    return user_answers, correct_answers
+    return user_answers, correct_answers, response_times
 
 if __name__ == "__main__":
-    user_answers, correct_answers = runBarChartTrials(3)
+    user_answers, correct_answers, response_times = runBarChartTrials(3)
     print("Your answers were: " + str(user_answers))
     print("The correct answers were: " + str(correct_answers))
+    print("Your response times: " + str(response_times))
