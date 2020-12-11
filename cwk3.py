@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import csv
 from numpy import random
 import time
+import sys
+
 def createSubPlots(df, trialNum):
     '''
     Create plot with n subplots, n being the number of columns in 
@@ -118,7 +120,6 @@ def createCsv(numRanges, organisedData):
 
     return pd.read_csv("TrialData.csv", index_col=0)
 
-# run trial n times
 def runBarChartTrials(numTrials):
     '''
     Runs a number of trials (numTrials) for the chart type: bar chart. 
@@ -132,8 +133,8 @@ def runBarChartTrials(numTrials):
     Returns:
         user_answers (list) -- list of user answers (int) for each trial
         correct_answers (list) -- list of correct answers (int) for each trial
-        response_times (list) -- list of Milliseconds that it took for the user
-                                 to answer each trial question
+        response_times (list) -- list of seconds (float) that it took for the 
+                                 user to answer each trial question
     '''
     user_answers = []
     correct_answers = []
@@ -151,16 +152,46 @@ def runBarChartTrials(numTrials):
         plt.draw()
         # record start time from when the user see's the graph
         start_time = time.time()
-        plt.pause(1)
+        plt.pause(0.5)
         # collect user answer
         user_answers.append(int(input("Answer: ")))
         # calculate response time of user for current trial
         response_times.append(time.time() - start_time)
         plt.close(fig)
+
+        # wait 1s as requested
+        time.sleep(1)
     return user_answers, correct_answers, response_times
 
+def calculateResults(n, user, correct):
+    '''
+    Calculates the number of times the user answered correctly.
+
+    Parameters:
+        n (int) -- the number of trials
+        user (list) -- list of the user answers
+        correct (list) -- list of the correct answers
+    
+    Returns:
+        numCorrect (int) -- the number of times the user answered correct.
+    '''
+    numCorrect = 0
+    for i in range(n):
+        # if the values at index i are the same
+        if user[i] == correct[i]:
+            numCorrect +=1
+    
+    return numCorrect
+
 if __name__ == "__main__":
-    user_answers, correct_answers, response_times = runBarChartTrials(3)
+    # take numTrials as argument
+    numTrials = int(sys.argv[1])
+    # run trials
+    user_answers, correct_answers, response_times = runBarChartTrials(numTrials)
+    # return results
     print("Your answers were: " + str(user_answers))
     print("The correct answers were: " + str(correct_answers))
     print("Your response times: " + str(response_times))
+
+    numCorrect = calculateResults(numTrials, user_answers, correct_answers)
+    print("You got " + str(numCorrect) + "/"+ str(numTrials) + " answers correct.")
