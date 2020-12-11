@@ -9,8 +9,8 @@ import sys
 
 def createBarChartSubPlots(df, trialNum):
     '''
-    Create plot with n subplots, n being the number of columns in 
-    the dataframe
+    Create plot with n bar chart subplots, n being the number of 
+    columns in the dataframe
 
     Parameters:
         df (TextFileReader) -- the dataframe containing degree 
@@ -24,7 +24,7 @@ def createBarChartSubPlots(df, trialNum):
     '''
     # size outer window  & add title
     fig = plt.figure(figsize = (11,8))
-    fig.suptitle('Trial ' + str(trialNum) + ' -- Which degree program has the largest cohourt of students obtaining a single degree classification?')
+    fig.suptitle('[Trial ' + str(trialNum + 1) + '] - Which degree program has the largest cohourt of students obtaining a single degree classification?')
     
     # generate multiple subplots
     for i in range (1, len(df.columns.values) + 1):
@@ -32,7 +32,7 @@ def createBarChartSubPlots(df, trialNum):
         degreeProgram = df.columns.values[i-1]
         # create subplot
         plt.subplot(2, 3, i)
-        plt.title('Chart ' + str(i) + '  Degree Program: ' + degreeProgram)
+        plt.title('[Chart: ' + str(i) + '],  Degree Program: ' + degreeProgram)
         plt.ylim(ymax=99)
         plt.ylabel("Percentage of students (%)")
         # grab data for degreeProgram & plot
@@ -41,7 +41,36 @@ def createBarChartSubPlots(df, trialNum):
     return fig
 
 def createPieChartSubPlots(df, trialNum):
-    return False
+    '''
+    Create plot with n pie chart subplots, n being the number of 
+    columns in the dataframe
+
+    Parameters:
+        df (TextFileReader) -- the dataframe containing degree 
+                               classification data (csv)
+        plt (matplotlib.pylot) -- the parent plot in which subplots
+                                  are contained
+        trialNum (int) -- the current trial number
+
+    Returns:
+        fig -- the figure containing the plots
+    '''
+    # size outer window  & add title
+    fig = plt.figure(figsize = (11,8))
+    fig.suptitle('[Trial ' + str(trialNum + 1) + '] - Which degree program has the largest cohourt of students obtaining a single degree classification?')
+    
+    # generate multiple subplots
+    for i in range (1, len(df.columns.values) + 1):
+        # grab degreeProgram from data
+        degreeProgram = df.columns.values[i-1]
+        # create subplot
+        plt.subplot(2,3,i)
+        plt.title('[Chart: ' + str(i) + '],  Degree Program: ' + degreeProgram)
+        plt.pie(df[degreeProgram], labels=df.index, startangle=90, autopct='%1.1f%%')
+        plt.axis('equal')
+        plt.tight_layout()
+
+    return fig
 
 def generateTrialData():
     '''
@@ -108,7 +137,8 @@ def createCsv(numRanges, organisedData):
     # Generate CSV file with random data
     with open('TrialData.csv', 'w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["Range", "Maths", "English", "Biology", "Economics", "Law", "CS"])
+        writer.writerow(["Range", "Maths", "English", "Biology", \
+            "Economics", "Law", "CS"])
         
         # insert ranges at start of data for index column
         organisedData[0].insert(0, "<40")
@@ -169,6 +199,7 @@ def runChartTrials(numTrials, chartType):
 
         # wait 1s as requested
         time.sleep(1)
+    
     return user_answers, correct_answers, response_times
 
 def calculateResults(n, user, correct):
@@ -211,10 +242,10 @@ if __name__ == "__main__":
     run pie chart trials, and return results to std.out
     '''
     print("\nRunning pie chart trials")
-    # user_answers, correct_answers, response_times = runChartTrials(numTrials, "pie")
+    user_answers, correct_answers, response_times = runChartTrials(numTrials, "pie")
     # return results
-    # print("Your answers were: " + str(user_answers))
-    # print("The correct answers were: " + str(correct_answers))
-    # print("Your response times: " + str(response_times))
-    # numCorrect = calculateResults(numTrials, user_answers, correct_answers)
-    # print("You got " + str(numCorrect) + "/"+ str(numTrials) + " answers correct.")
+    print("\nYour answers were: " + str(user_answers))
+    print("The correct answers were: " + str(correct_answers))
+    print("Your response times: " + str(response_times))
+    numCorrect = calculateResults(numTrials, user_answers, correct_answers)
+    print("You got " + str(numCorrect) + "/"+ str(numTrials) + " answers correct.")
