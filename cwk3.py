@@ -7,7 +7,7 @@ from numpy import random
 import time
 import sys
 
-def createSubPlots(df, trialNum):
+def createBarChartSubPlots(df, trialNum):
     '''
     Create plot with n subplots, n being the number of columns in 
     the dataframe
@@ -39,6 +39,9 @@ def createSubPlots(df, trialNum):
         plt.bar(df.index, df[degreeProgram])
 
     return fig
+
+def createPieChartSubPlots(df, trialNum):
+    return False
 
 def generateTrialData():
     '''
@@ -120,7 +123,7 @@ def createCsv(numRanges, organisedData):
 
     return pd.read_csv("TrialData.csv", index_col=0)
 
-def runBarChartTrials(numTrials):
+def runChartTrials(numTrials, chartType):
     '''
     Runs a number of trials (numTrials) for the chart type: bar chart. 
     User is prompted to answer a question via keyboard input.
@@ -146,8 +149,13 @@ def runBarChartTrials(numTrials):
         df = createCsv(numRanges, organisedData)
         # collect correct answer for trial
         correct_answers.append(correctChart)
+        
         # construct subplots for each degree program
-        fig = createSubPlots(df, i)
+        if chartType == "bar":
+            fig = createBarChartSubPlots(df, i)
+        else:
+            fig = createPieChartSubPlots(df, i)
+
         # draw graph
         plt.draw()
         # record start time from when the user see's the graph
@@ -186,12 +194,27 @@ def calculateResults(n, user, correct):
 if __name__ == "__main__":
     # take numTrials as argument
     numTrials = int(sys.argv[1])
-    # run trials
-    user_answers, correct_answers, response_times = runBarChartTrials(numTrials)
+
+    """
+    run bar chart trials, and return results to std.out
+    """
+    print("Running bar chart trials")
+    user_answers, correct_answers, response_times = runChartTrials(numTrials, "bar")
     # return results
-    print("Your answers were: " + str(user_answers))
+    print("\nYour answers were: " + str(user_answers))
     print("The correct answers were: " + str(correct_answers))
     print("Your response times: " + str(response_times))
-
     numCorrect = calculateResults(numTrials, user_answers, correct_answers)
     print("You got " + str(numCorrect) + "/"+ str(numTrials) + " answers correct.")
+
+    '''
+    run pie chart trials, and return results to std.out
+    '''
+    print("\nRunning pie chart trials")
+    # user_answers, correct_answers, response_times = runChartTrials(numTrials, "pie")
+    # return results
+    # print("Your answers were: " + str(user_answers))
+    # print("The correct answers were: " + str(correct_answers))
+    # print("Your response times: " + str(response_times))
+    # numCorrect = calculateResults(numTrials, user_answers, correct_answers)
+    # print("You got " + str(numCorrect) + "/"+ str(numTrials) + " answers correct.")
