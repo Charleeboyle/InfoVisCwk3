@@ -24,7 +24,7 @@ def createBarChartSubPlots(df, trialNum):
     '''
     # size outer window  & add title
     fig = plt.figure(figsize = (11,8))
-    fig.suptitle('[Trial ' + str(trialNum + 1) + '] - Which degree program has the largest cohourt of students obtaining a single degree classification?')
+    fig.suptitle('[Trial ' + str(trialNum + 1) + '] - Which degree program has the largest cohourt of students obtaining a single degree classification?',fontweight='bold')
     
     # generate multiple subplots
     for i in range (1, len(df.columns.values) + 1):
@@ -37,7 +37,7 @@ def createBarChartSubPlots(df, trialNum):
         plt.ylabel("Percentage of students (%)")
         # grab data for degreeProgram & plot
         plt.bar(df.index, df[degreeProgram])
-
+        plt.tight_layout()
     return fig
 
 def createPieChartSubPlots(df, trialNum):
@@ -57,7 +57,7 @@ def createPieChartSubPlots(df, trialNum):
     '''
     # size outer window  & add title
     fig = plt.figure(figsize = (11,8))
-    fig.suptitle('[Trial ' + str(trialNum + 1) + '] - Which degree program has the largest cohourt of students obtaining a single degree classification?')
+    fig.suptitle('[Trial ' + str(trialNum + 1) + '] - Which degree program has the largest cohourt of students obtaining a single degree classification?',fontweight='bold')
     
     # generate multiple subplots
     for i in range (1, len(df.columns.values) + 1):
@@ -66,8 +66,8 @@ def createPieChartSubPlots(df, trialNum):
         # create subplot
         plt.subplot(2,3,i)
         plt.title('[Chart: ' + str(i) + '],  Degree Program: ' + degreeProgram)
-        plt.pie(df[degreeProgram], labels=df.index, startangle=90, autopct='%1.1f%%')
         plt.axis('equal')
+        plt.pie(df[degreeProgram], labels=df.index, startangle=90, autopct='%1.1f%%', explode=(0.025,0.025,0.025,0.025,0.025))
         plt.tight_layout()
 
     return fig
@@ -95,7 +95,7 @@ def generateTrialData():
         entry = []
         total = 0
         for parameter in parameters:
-            temp = random.randint(parameter)
+            temp = random.randint(4,parameter)
             total += temp
             entry.append(temp)
         # add final value to make total 100
@@ -119,7 +119,29 @@ def generateTrialData():
     
     return numRanges, organisedData, correctChart
 
-def createCsv(numRanges, organisedData):
+def createResultDataCsv(user, correct, response_times, chartType, numTrials):
+    '''
+    Constructs a csv file from the participants trial results, organised into Bar
+    and Pie chart segments
+
+    Parameters:
+        user (list) -- The participants answers to each trial
+        correct (list) -- The correct answeres for each trial
+        response_times(list) -- The participants response times to answer each trial
+        chartType (string) -- bar or pie charts
+    '''
+
+    # Generate CSV file with random data
+    with open(chartType + '_TrialResults.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([chartType])
+        
+        # construct csv file
+        writer.writerow(user)
+        writer.writerow(correct)
+        writer.writerow(response_times)
+
+def createTrialDataCsv(numRanges, organisedData):
     '''
     Constructs a csv file from the organisedData, representing degree 
     classification data for a number of degree programs, split up into 
@@ -162,7 +184,8 @@ def runChartTrials(numTrials, chartType):
 
     Parameters:
         numTrials (int) -- number of times the trial will run (default 10)
-    
+        chartType (string) -- bar or pie charts
+
     Returns:
         user_answers (list) -- list of user answers (int) for each trial
         correct_answers (list) -- list of correct answers (int) for each trial
@@ -176,7 +199,7 @@ def runChartTrials(numTrials, chartType):
         # generate random data for trial
         numRanges, organisedData, correctChart = generateTrialData()
         # construct csv to be used as data
-        df = createCsv(numRanges, organisedData)
+        df = createTrialDataCsv(numRanges, organisedData)
         # collect correct answer for trial
         correct_answers.append(correctChart)
         
@@ -200,6 +223,9 @@ def runChartTrials(numTrials, chartType):
         # wait 1s as requested
         time.sleep(1)
     
+    # generate csv to show results of experiment for current participant
+    createResultDataCsv(user_answers, correct_answers, response_times, chartType, numTrials)
+
     return user_answers, correct_answers, response_times
 
 def calculateResults(n, user, correct):
