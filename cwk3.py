@@ -15,8 +15,6 @@ def createBarChartSubPlots(df, trialNum):
     Parameters:
         df (TextFileReader) -- the dataframe containing degree 
                                classification data (csv)
-        plt (matplotlib.pylot) -- the parent plot in which subplots
-                                  are contained
         trialNum (int) -- the current trial number
 
     Returns:
@@ -38,6 +36,7 @@ def createBarChartSubPlots(df, trialNum):
         # grab data for degreeProgram & plot
         plt.bar(df.index, df[degreeProgram])
         plt.tight_layout()
+
     return fig
 
 def createPieChartSubPlots(df, trialNum):
@@ -48,8 +47,6 @@ def createPieChartSubPlots(df, trialNum):
     Parameters:
         df (TextFileReader) -- the dataframe containing degree 
                                classification data (csv)
-        plt (matplotlib.pylot) -- the parent plot in which subplots
-                                  are contained
         trialNum (int) -- the current trial number
 
     Returns:
@@ -121,8 +118,8 @@ def generateTrialData():
 
 def createResultDataCsv(user, correct, response_times, chartType, numTrials):
     '''
-    Constructs a csv file from the participants trial results, organised into Bar
-    and Pie chart segments
+    Constructs a csv file from the participants trial results for the chart type
+    specified
 
     Parameters:
         user (list) -- The participants answers to each trial
