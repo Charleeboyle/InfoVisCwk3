@@ -1,4 +1,4 @@
-Prereq: Download all dependencies (pandas, numpy, matplotlib). Recommended virtual environment - https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/.
+Prereq: download all dependencies (pandas, numpy, matplotlib) using virtual environment (recommended) -  https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/.
 
 In the project directory, run `$python cwk3.py $(n)` to run `n` bar chart trials followed by `n` pie chart trials
 
