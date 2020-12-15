@@ -34,7 +34,7 @@ def createBarChartSubPlots(df, trialNum):
         plt.ylim(ymax=99)
         plt.ylabel("Percentage of students (%)")
         # grab data for degreeProgram & plot
-        plt.bar(df.index, df[degreeProgram])
+        plt.bar(df.index, df[degreeProgram], color=['C0', 'C1', 'C2', 'C3', 'C4'])
         plt.tight_layout()
 
     return fig
@@ -162,7 +162,7 @@ def createTrialDataCsv(numRanges, organisedData):
         # insert ranges at start of data for index column
         organisedData[0].insert(0, "<40")
         organisedData[1].insert(0, "40-49")
-        organisedData[2].insert(0, "50-50")
+        organisedData[2].insert(0, "50-59")
         organisedData[3].insert(0, "60-69")
         organisedData[4].insert(0, ">70")
         
