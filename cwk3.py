@@ -118,7 +118,7 @@ def generateTrialData():
     
     return numRanges, organisedData, correctChart
 
-def createResultDataCsv(user, correct, response_times, chartType, numTrials, experimentId):
+def recordTrialData(user, correct, response_times, chartType, numTrials, experimentId):
     '''
     Constructs a csv file from the participants trial results for the chart type
     specified
@@ -226,7 +226,7 @@ def runChartTrials(numTrials, chartType, experimentId):
         time.sleep(1)
     
     # generate csv to show results of experiment for current participant
-    createResultDataCsv(user_answers, correct_answers, response_times, chartType, numTrials, experimentId)
+    recordTrialData(user_answers, correct_answers, response_times, chartType, numTrials, experimentId)
 
     return user_answers, correct_answers, response_times
 
