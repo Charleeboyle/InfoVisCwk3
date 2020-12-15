@@ -6,6 +6,8 @@ import csv
 from numpy import random
 import time
 import sys
+import string
+import secrets
 
 def createBarChartSubPlots(df, trialNum):
     '''
@@ -116,7 +118,7 @@ def generateTrialData():
     
     return numRanges, organisedData, correctChart
 
-def createResultDataCsv(user, correct, response_times, chartType, numTrials):
+def createResultDataCsv(user, correct, response_times, chartType, numTrials, experimentId):
     '''
     Constructs a csv file from the participants trial results for the chart type
     specified
@@ -126,12 +128,14 @@ def createResultDataCsv(user, correct, response_times, chartType, numTrials):
         correct (list) -- The correct answeres for each trial
         response_times(list) -- The participants response times to answer each trial
         chartType (string) -- bar or pie charts
+        numTrials (int) -- number of trials for the experiment
+        experimentId (string) -- string of unique characters
     '''
 
     # Generate CSV file with random data
-    with open(chartType + '_TrialResults.csv', 'w', newline='') as file:
+    with open('ExperimentData.csv', 'a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([chartType])
+        writer.writerow([chartType + " chart data (experimentId " +experimentId + ")"])
         
         # construct csv file
         writer.writerow(user)
@@ -160,11 +164,11 @@ def createTrialDataCsv(numRanges, organisedData):
             "Economics", "Law", "CS"])
         
         # insert ranges at start of data for index column
-        organisedData[0].insert(0, "<40")
-        organisedData[1].insert(0, "40-49")
-        organisedData[2].insert(0, "50-59")
-        organisedData[3].insert(0, "60-69")
-        organisedData[4].insert(0, ">70")
+        organisedData[0].insert(0, "Fail")
+        organisedData[1].insert(0, "3rd")
+        organisedData[2].insert(0, "2. ii")
+        organisedData[3].insert(0, "2. i")
+        organisedData[4].insert(0, "1st")
         
         # construct csv file
         for i in range(numRanges):
@@ -172,7 +176,7 @@ def createTrialDataCsv(numRanges, organisedData):
 
     return pd.read_csv("TrialData.csv", index_col=0)
 
-def runChartTrials(numTrials, chartType):
+def runChartTrials(numTrials, chartType, experimentId):
     '''
     Runs a number of trials (numTrials) for the chart type: bar chart. 
     User is prompted to answer a question via keyboard input.
@@ -182,6 +186,7 @@ def runChartTrials(numTrials, chartType):
     Parameters:
         numTrials (int) -- number of times the trial will run (default 10)
         chartType (string) -- bar or pie charts
+        experimentId (string) -- string of unique characters
 
     Returns:
         user_answers (list) -- list of user answers (int) for each trial
@@ -221,7 +226,7 @@ def runChartTrials(numTrials, chartType):
         time.sleep(1)
     
     # generate csv to show results of experiment for current participant
-    createResultDataCsv(user_answers, correct_answers, response_times, chartType, numTrials)
+    createResultDataCsv(user_answers, correct_answers, response_times, chartType, numTrials, experimentId)
 
     return user_answers, correct_answers, response_times
 
@@ -249,11 +254,12 @@ if __name__ == "__main__":
     # take numTrials as argument
     numTrials = int(sys.argv[1])
 
+    experimentId = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(16))
     """
     run bar chart trials, and return results to std.out
     """
-    print("Running bar chart trials")
-    user_answers, correct_answers, response_times = runChartTrials(numTrials, "bar")
+    print("Running bar chart trials for experiment: " + experimentId)
+    user_answers, correct_answers, response_times = runChartTrials(numTrials, "bar", experimentId)
     # return results
     print("\nYour answers were: " + str(user_answers))
     print("The correct answers were: " + str(correct_answers))
@@ -264,8 +270,8 @@ if __name__ == "__main__":
     '''
     run pie chart trials, and return results to std.out
     '''
-    print("\nRunning pie chart trials")
-    user_answers, correct_answers, response_times = runChartTrials(numTrials, "pie")
+    print("\nRunning pie chart trials for experiment: " + experimentId)
+    user_answers, correct_answers, response_times = runChartTrials(numTrials, "pie", experimentId)
     # return results
     print("\nYour answers were: " + str(user_answers))
     print("The correct answers were: " + str(correct_answers))
